@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Webová fotogalerie</title>
+	<link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="src/css/jquery-ui.min.css">
+
+</head>
+<body>
+
+<div class="container">
+	<h1>Webová fotogalerie</h1>
+
+	<h2>Nastavení</h2>
+
+	<div class="row">
+		<div class="col-md-6">
+			<p>Počet obrázků na stránce: </p>
+			<div id="slider"></div>
+		</div>
+
+		<div class="col-md-6">
+			<p>Velikost náhledů: </p>
+			<div id="slider2"></div>
+		</div>
+	</div>
+	<br>
+
+	<h2>Náhled fotogalerie:</h2>
+	<div class="row">
+		
+	</div>
+
+</div>
+
+<script type="text/javascript" src="src/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="src/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="src/js/jquery-ui.js"></script>
+
+<script>
+  $( function() {
+    $( "#slider" ).slider();
+    $( "#slider2" ).slider();
+  } );
+  </script>
+</body>
+</html>
