@@ -5,6 +5,10 @@
 	<link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="src/css/jquery-ui.min.css">
 
+	<style>
+		.ui-slider-range { background: deepskyblue; }
+	</style>
+
 </head>
 <body>
 
@@ -23,7 +27,7 @@
 					<div id="slider"></div>
 				</div>
 				<div class="col-md-2">
-					<input type="text" class="form-control" style="position: relative; top: -12px; left: -7px" disabled value="0">
+					<input id="firstSliderValue" type="text" class="form-control" style="position: relative; top: -12px; left: -17px" disabled value="0">
 				</div>
 			</div>
 
@@ -37,7 +41,7 @@
 					<div id="slider2"></div>
 				</div>
 				<div class="col-md-2">
-					<input type="text" class="form-control" style="position: relative; top: -12px; left: -7px" disabled value="0 px">
+					<input id="secondSliderValue" type="text" class="form-control" style="position: relative; top: -12px; left: -17px" disabled value="0 px">
 				</div>
 			</div>
 
@@ -57,10 +61,34 @@
 <script type="text/javascript" src="src/js/jquery-ui.js"></script>
 
 <script>
+    const firstSliderSettings = {
+        min: 0,
+        max: 10,
+        range: "min",
+        slide: refreshFirstSlider,
+    };
+
+    const secondSliderSettings = {
+        min: 0,
+        max: 50,
+        range: "min",
+        slide: refreshSecondSlider,
+	};
+
   $( function() {
-    $( "#slider" ).slider();
-    $( "#slider2" ).slider();
+    $( "#slider" ).slider(firstSliderSettings);
+    $( "#slider2" ).slider(secondSliderSettings);
   } );
+
+  function refreshFirstSlider(){
+	  const sliderValue = $( "#slider" ).slider("value");
+      $( "#firstSliderValue" ).val(sliderValue);
+  }
+
+    function refreshSecondSlider(){
+        const sliderValue = $( "#slider2" ).slider("value");
+        $( "#secondSliderValue" ).val(sliderValue + " px");
+    }
   </script>
 </body>
 </html>
