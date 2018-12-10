@@ -4,9 +4,137 @@
 	<title>Webová fotogalerie</title>
 	<link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="src/css/jquery-ui.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
 	<style>
 		.ui-slider-range { background: deepskyblue; }
+
+		.img-div {
+			width: 340px;
+			height: 280px;
+			margin: 10px;
+
+		}
+
+		.ui-slider-handle {
+			z-index: 1 !important;
+		}
+
+		.galleryImg {
+			width: 320px;
+			height: 240px;
+			position: relative;
+			top: 10px;
+			left: 10px;
+			cursor: pointer;
+		}
+
+		.galleryImg:hover {
+			opacity: 0.7;
+		}
+
+		.shadow {
+			-moz-box-shadow:    inset 0 0 10px #000000;
+			-webkit-box-shadow: inset 0 0 10px #000000;
+			box-shadow:         inset 0 0 10px #000000;
+		}
+
+		.img-div p {
+			position: relative;
+			top: 10px;
+			left: 10px;
+			color: #404040;
+		}
+
+		.p-editable {
+			display: inline-block;
+			padding-right: 20px
+		}
+
+		[contenteditable="true"]:focus {
+			background-color: lightgray;
+		}
+
+
+		/* The Modal (background) */
+		.modal {
+			display: none; /* Hidden by default */
+			position: fixed; /* Stay in place */
+			z-index: 1; /* Sit on top */
+			padding-top: 100px; /* Location of the box */
+			left: 0;
+			top: 0;
+			width: 100%; /* Full width */
+			height: 100%; /* Full height */
+			overflow: auto; /* Enable scroll if needed */
+			background-color: rgb(0,0,0); /* Fallback color */
+			background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+		}
+
+		/* Modal Content (Image) */
+		.modal-content {
+			margin: auto;
+			display: block;
+			width: 80%;
+			max-width: 700px;
+		}
+
+		/* Caption of Modal Image (Image Text) - Same Width as the Image */
+		#caption {
+			margin: auto;
+			display: block;
+			width: 80%;
+			max-width: 700px;
+			text-align: center;
+			color: #ccc;
+			padding: 10px 0;
+			height: 150px;
+		}
+
+		/* Add Animation - Zoom in the Modal */
+		.modal-content, #caption {
+			animation-name: zoom;
+			animation-duration: 0.6s;
+		}
+
+		@keyframes zoom {
+			from {transform:scale(0)}
+			to {transform:scale(1)}
+		}
+
+		/* The Close Button */
+		.close {
+			position: absolute;
+			top: 15px;
+			right: 35px;
+			color: #f1f1f1;
+			font-size: 40px;
+			font-weight: bold;
+			transition: 0.3s;
+		}
+
+		.close:hover,
+		.close:focus {
+			color: #bbb;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		/* 100% Image Width on Smaller Screens */
+		@media only screen and (max-width: 700px){
+			.modal-content {
+				width: 100%;
+			}
+		}
+
+		.btn-small {
+			font-size: 13px;
+			width:20px !important;
+			padding:0 !important;
+			position: relative;
+			top: 15px;
+			left: -10px;
+		}
 	</style>
 
 </head>
@@ -20,17 +148,6 @@
 
 	<div class="row">
 
-
-		<div class="row col-md-12">
-			<div class="col-md-6">
-				<div class="form-group">
-					<label for="name">Název:</label>
-					<input type="text" id="name" class="form-control">
-				</div>
-			</div>
-		</div>
-
-
 		<div class="col-md-6">
 			<p>Počet obrázků na stránce: </p>
 
@@ -39,7 +156,7 @@
 					<div id="slider"></div>
 				</div>
 				<div class="col-md-2">
-					<input id="firstSliderValue" type="text" class="form-control" style="position: relative; top: -12px; left: -17px" disabled value="0">
+					<input id="firstSliderValue" type="text" class="form-control" style="position: relative; top: -12px; left: -17px" disabled value="6">
 				</div>
 			</div>
 		</div>
@@ -56,14 +173,139 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="col-md-6">
+			<input type="checkbox" id="downloadAll">Povolit možnost stáhnout všechny fotografie
+		</div>
 	</div>
+	<br>
 	<br>
 
 	<h2>Náhled fotogalerie:</h2>
-	<div class="row">
-		
+	<div class="row" style="border: 1px solid black; padding: 20px">
+		<div class="col-md-12">
+			<p id="previewName" contenteditable="true" class="p-editable" style="font-size: 40px; font-weight: bold">Název fotogalerie</p>
+			<a href="img/photos.zip"><button type="button" class="btn btn-primary" style="float:right" id="downloadAllButton"><i class="fas fa-download"></i> Stáhnout všechny fotky</button></a>
+		</div>
+
+		<div class="img-div shadow" id="img-1">
+			<img src="img/1.jpg" class="galleryImg" id="img1" onclick="showModal('img1')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+			<!--<a href="img/1.jpg" download="1.jpg" ><button type="button" class="btn btn-primary btn-small" style="float:right"><i class="fas fa-download"></i></button></a>-->
+		</div>
+
+		<div class="img-div shadow" id="img-2">
+			<img src="img/2.jpg" class="galleryImg" id="img2" onclick="showModal('img2')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-3">
+			<img src="img/3.jpg" class="galleryImg" id="img3" onclick="showModal('img3')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-4">
+			<img src="img/4.jpg" class="galleryImg" id="img4" onclick="showModal('img4')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-5">
+			<img src="img/5.jpg" class="galleryImg" id="img5" onclick="showModal('img5')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-6">
+			<img src="img/6.jpg" class="galleryImg" id="img6" onclick="showModal('img6')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-7">
+			<img src="img/7.jpg" class="galleryImg" id="img7" onclick="showModal('img7')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-8">
+			<img src="img/8.jpg" class="galleryImg" id="img8" onclick="showModal('img8')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-9">
+			<img src="img/9.jpeg" class="galleryImg" id="img9" onclick="showModal('img9')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-10">
+			<img src="img/10.jpg" class="galleryImg" id="img10" onclick="showModal('img10')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-11">
+			<img src="img/11.jpg" class="galleryImg" id="img11" onclick="showModal('img11')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-12">
+			<img src="img/12.jpg" class="galleryImg" id="img12" onclick="showModal('img12')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-13">
+			<img src="img/13.jpg" class="galleryImg" id="img13" onclick="showModal('img13')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-14">
+			<img src="img/14.jpg" class="galleryImg" id="img14" onclick="showModal('img14')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-15">
+			<img src="img/15.jpg" class="galleryImg" id="img15" onclick="showModal('img15')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-16">
+			<img src="img/16.jpg" class="galleryImg" id="img16" onclick="showModal('img16')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-17">
+			<img src="img/17.jpg" class="galleryImg" id="img17" onclick="showModal('img17')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-18">
+			<img src="img/18.jpg" class="galleryImg" id="img18" onclick="showModal('img18')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-19">
+			<img src="img/19.jpg" class="galleryImg" id="img19" onclick="showModal('img19')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+		<div class="img-div shadow" id="img-20">
+			<img src="img/20.jpg" class="galleryImg" id="img20" onclick="showModal('img20')">
+			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
+		</div>
+
+
 	</div>
 
+
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+	<!-- The Close Button -->
+	<span class="close">&times;</span>
+
+	<!-- Modal Content (The Image) -->
+	<img class="modal-content" id="img01">
+
+	<!-- Modal Caption (Image Text) -->
+	<div id="caption"></div>
 </div>
 
 <script type="text/javascript" src="src/js/jquery-3.3.1.min.js"></script>
@@ -71,34 +313,107 @@
 <script type="text/javascript" src="src/js/jquery-ui.js"></script>
 
 <script>
+
     const firstSliderSettings = {
-        min: 0,
-        max: 10,
+		min: 1,
+		max: 20,
+		value: 6,
         range: "min",
         slide: refreshFirstSlider,
+		change: refreshFirstSlider,
     };
 
     const secondSliderSettings = {
-        min: 0,
-        max: 50,
+        min: 175,
+        max: 505,
+		value: 320,
         range: "min",
         slide: refreshSecondSlider,
+		change: refreshSecondSlider,
 	};
 
-  $( function() {
-    $( "#slider" ).slider(firstSliderSettings);
-    $( "#slider2" ).slider(secondSliderSettings);
-  } );
+  	$( function() {
+    	$( "#slider" ).slider(firstSliderSettings);
+    	$( "#slider2" ).slider(secondSliderSettings);
 
-  function refreshFirstSlider(){
-	  const sliderValue = $( "#slider" ).slider("value");
-      $( "#firstSliderValue" ).val(sliderValue);
-  }
 
-    function refreshSecondSlider(){
-        const sliderValue = $( "#slider2" ).slider("value");
-        $( "#secondSliderValue" ).val(sliderValue + " px");
+    	refreshFirstSlider();
+    	refreshSecondSlider();
+
+    	switchDownloadAll()
+  	} );
+  	
+  	function showModal(imageId) {
+        var modal = document.getElementById('myModal');
+
+        // Get the image and insert it inside the modal - use its "alt" text as a caption
+        var img = document.getElementById(imageId);
+        var modalImg = document.getElementById("img01");
+
+        modal.style.display = "block";
+        modalImg.src = img.src;
+
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
     }
+
+  	function refreshFirstSlider(){
+	  	const sliderValue = $( "#slider" ).slider("value");
+      	$( "#firstSliderValue" ).val(sliderValue);
+
+
+      	for(let i = 1; i <= 20; i++){
+      	    let currentDiv = $("#img-" + i);
+
+      	    if(i <= sliderValue){
+				currentDiv.show();
+			} else {
+                currentDiv.hide();
+			}
+		}
+  	}
+
+  	function refreshSecondSlider(){
+  		const sliderValue = $( "#slider2" ).slider("value");
+        $( "#secondSliderValue" ).val(sliderValue + " px");
+
+        const imgWidth = sliderValue;
+        const divWidth = imgWidth + 20;
+
+        const imgHeight = sliderValue * 0.75;
+        const divHeight = imgHeight + 40;
+
+        $(".img-div").each(function (index) {
+			$(this).css("width", divWidth + "px");
+			$(this).css("height", divHeight + "px");
+
+			$(this).find("img").css("width", imgWidth + "px");
+			$(this).find("img").css("height", imgHeight + "px");
+        })
+    }
+
+    $("#galleryName").on("change paste keyup", function() {
+        $("#previewName").text($(this).val());
+    });
+
+
+  	$("#downloadAll").on("change", switchDownloadAll);
+
+
+	function switchDownloadAll() {
+	    const downloadAllButton = $("#downloadAllButton");
+
+        if($(this).is(":checked")) {
+			downloadAllButton.show();
+		} else {
+			downloadAllButton.hide();
+		}
+    }
+
   </script>
 </body>
 </html>
