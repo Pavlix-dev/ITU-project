@@ -2,8 +2,8 @@
 <html>
 <head>
 	<title>Webová fotogalerie</title>
-	<link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="src/css/jquery-ui.min.css">
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
 	<style>
@@ -13,7 +13,6 @@
 			width: 340px;
 			height: 280px;
 			margin: 10px;
-
 		}
 
 		.ui-slider-handle {
@@ -126,15 +125,6 @@
 				width: 100%;
 			}
 		}
-
-		.btn-small {
-			font-size: 13px;
-			width:20px !important;
-			padding:0 !important;
-			position: relative;
-			top: 15px;
-			left: -10px;
-		}
 	</style>
 
 </head>
@@ -191,7 +181,6 @@
 		<div class="img-div shadow" id="img-1">
 			<img src="img/1.jpg" class="galleryImg" id="img1" onclick="showModal('img1')">
 			<p contenteditable="true" class="p-editable">Lorem ipsum dolor</p>
-			<!--<a href="img/1.jpg" download="1.jpg" ><button type="button" class="btn btn-primary btn-small" style="float:right"><i class="fas fa-download"></i></button></a>-->
 		</div>
 
 		<div class="img-div shadow" id="img-2">
@@ -308,12 +297,14 @@
 	<div id="caption"></div>
 </div>
 
-<script type="text/javascript" src="src/js/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="src/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="src/js/jquery-ui.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <script>
 
+	//********** slidery *********
+	//nastavení prvního slideru
     const firstSliderSettings = {
 		min: 1,
 		max: 20,
@@ -323,6 +314,7 @@
 		change: refreshFirstSlider,
     };
 
+    //nastavení druhého slideru
     const secondSliderSettings = {
         min: 175,
         max: 505,
@@ -332,17 +324,82 @@
 		change: refreshSecondSlider,
 	};
 
+    //jquery funkce - tahle konstrukce se provede až po načtení všech skriptů
   	$( function() {
+  	    //provázání prvků na stránce s knihovnou
     	$( "#slider" ).slider(firstSliderSettings);
     	$( "#slider2" ).slider(secondSliderSettings);
 
 
+    	//nastavení dat na stránce pomocí prvního slideru
     	refreshFirstSlider();
     	refreshSecondSlider();
-
-    	switchDownloadAll()
   	} );
-  	
+
+    function refreshFirstSlider(){
+        const sliderValue = $( "#slider" ).slider("value");
+        $( "#firstSliderValue" ).val(sliderValue);
+
+
+        for(let i = 1; i <= 20; i++){
+            let currentDiv = $("#img-" + i);
+
+            if(i <= sliderValue){
+                currentDiv.show();
+            } else {
+                currentDiv.hide();
+            }
+        }
+    }
+
+    function refreshSecondSlider(){
+        const sliderValue = $( "#slider2" ).slider("value");
+        $( "#secondSliderValue" ).val(sliderValue + " px");
+
+        const imgWidth = sliderValue;
+        const divWidth = imgWidth + 20;
+
+        const imgHeight = sliderValue * 0.75;
+        const divHeight = imgHeight + 40;
+
+        $(".img-div").each(function (index) {
+            $(this).css("width", divWidth + "px");
+            $(this).css("height", divHeight + "px");
+
+            $(this).find("img").css("width", imgWidth + "px");
+            $(this).find("img").css("height", imgHeight + "px");
+        })
+    }
+
+
+
+
+    //********** možnost stáhnout vše *********
+    $( function() {
+        //vypnutí možnosti stáhnout vše po inicializaci fotogalerie
+        switchDownloadAll()
+    } );
+
+    //pokud nastane event změna na checkboxu, zavolá se funkce, která možnost stáhnout vše zviditelní nebo zneviditelní
+    $("#downloadAll").on("change", switchDownloadAll);
+
+
+    function switchDownloadAll() {
+        //zaměření tlačítka "stáhnout všechny fotografie"
+        const downloadAllButton = $("#downloadAllButton");
+
+        //pokud je checkbox checked, tlačítko se zviditelní
+        if($(this).is(":checked")) {
+            downloadAllButton.show();
+        } else {
+            downloadAllButton.hide();
+        }
+    }
+
+
+
+
+    //********** zoom fotografie *********
   	function showModal(imageId) {
         var modal = document.getElementById('myModal');
 
@@ -360,60 +417,6 @@
             modal.style.display = "none";
         }
     }
-
-  	function refreshFirstSlider(){
-	  	const sliderValue = $( "#slider" ).slider("value");
-      	$( "#firstSliderValue" ).val(sliderValue);
-
-
-      	for(let i = 1; i <= 20; i++){
-      	    let currentDiv = $("#img-" + i);
-
-      	    if(i <= sliderValue){
-				currentDiv.show();
-			} else {
-                currentDiv.hide();
-			}
-		}
-  	}
-
-  	function refreshSecondSlider(){
-  		const sliderValue = $( "#slider2" ).slider("value");
-        $( "#secondSliderValue" ).val(sliderValue + " px");
-
-        const imgWidth = sliderValue;
-        const divWidth = imgWidth + 20;
-
-        const imgHeight = sliderValue * 0.75;
-        const divHeight = imgHeight + 40;
-
-        $(".img-div").each(function (index) {
-			$(this).css("width", divWidth + "px");
-			$(this).css("height", divHeight + "px");
-
-			$(this).find("img").css("width", imgWidth + "px");
-			$(this).find("img").css("height", imgHeight + "px");
-        })
-    }
-
-    $("#galleryName").on("change paste keyup", function() {
-        $("#previewName").text($(this).val());
-    });
-
-
-  	$("#downloadAll").on("change", switchDownloadAll);
-
-
-	function switchDownloadAll() {
-	    const downloadAllButton = $("#downloadAllButton");
-
-        if($(this).is(":checked")) {
-			downloadAllButton.show();
-		} else {
-			downloadAllButton.hide();
-		}
-    }
-
   </script>
 </body>
 </html>
